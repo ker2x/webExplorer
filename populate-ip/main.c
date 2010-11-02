@@ -56,20 +56,12 @@ int main() {
     strcpy( opts->host , "127.0.0.1" );
     opts->port = 27017;
 
-    status = mongo_connect( conn, opts );
-
-    switch (status) {
-        case mongo_conn_success: printf( "connection succeeded\n" ); break;
-        case mongo_conn_bad_arg: printf( "bad arguments\n" ); return 1;
-        case mongo_conn_no_socket: printf( "no socket\n" ); return 1;
-        case mongo_conn_fail: printf( "connection failed\n" ); return 1;
-        case mongo_conn_not_master: printf( "not master\n" ); return 1;
-    }
-
 
     /* CODE WILL GO HERE */ 
 	while(1)
 	{
+		status = mongo_connect( conn, opts );
+
 		a = 1 + rand() % 222; // we can directly skip 224.0.0.0 and above
 		b = rand() % 255;
 		c = rand() % 255;
@@ -135,46 +127,10 @@ int main() {
 		if(chunk.memory) { free(chunk.memory); }
 		curl_global_cleanup();
 
+		mongo_destroy( conn );
 
 	}
 
-/*
-	for(a = 1; a < 256; a++) 
-	{
-		if(a == 10 || a == 127) { continue; }	//Skip 10.0.0.0/8 and 127.0.0.0/8
-		if(a > 223) 			{ continue; }	//Skip 224.0.0.0/4 and 240.0.0.0/4
-		for(b = 0; b < 256; b++) 
-		{
-			if(a == 169 && b == 254) 			{ continue; }	//Skip 169.254.0.0/16
-			if(a == 172 && b > 15 && b < 32) 	{ continue; } 	//Skip 172.16.0.0/12
-			if(a == 192 && b == 168) 			{ continue; }	//Skip 192.168.0.0/16
-			if(a == 198 && b > 17 && b < 20) 	{ continue; } 	//Skip 198.18.0.0/15
-			printf("%d.%d.%d.%d\n", a, b, c, d);
-			for(c = 0; c < 256; c++) 
-			{
-				if(a == 192 && b == 0 && c == 0)	{ continue; }	//Skip 192.0.0.0/24
-				if(a == 192 && b == 0 && c == 2) 	{ continue; }	//Skip 192.0.2.0/24
-				if(a == 192 && b == 88 && c == 99)	{ continue; }	//Skip 192.88.99.0/24
-				if(a == 198 && b == 51 && c == 100)	{ continue; }	//Skip 198.51.100.0/24
-				if(a == 203 && b == 0 && c == 113)	{ continue; }	//Skip 203.0.113.0/24
-				for(d = 1; d < 255; d++) 
-				{
-					snprintf(ip, sizeof(ip) * sizeof(char), "%d.%d.%d.%d\n", a, b, c, d);
-					//printf("%s\n", ip);
-					bson_buffer_init( &buf);
-					bson_append_new_oid( &buf, "_id" );
-					bson_append_string( &buf, "ip", ip );
-					bson_append_bool( &buf, "explored", 0);
-					bson_from_buffer( &bs, &buf );
-					mongo_insert(conn, "web.explorer",&bs);
-					bson_destroy(&bs);
-				}
-			}
-		}
-	}
-*/
-		
-    mongo_destroy( conn );
     printf( "\nconnection closed\n" );
 
     return 0;
