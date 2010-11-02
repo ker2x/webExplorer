@@ -82,7 +82,7 @@ int main() {
 		//printf("%d.%d.%d.%d\n", a, b, c, d);
 		snprintf(ip, sizeof(ip) * sizeof(char), "%d.%d.%d.%d", a, b, c, d);
 		snprintf(httpAddress, sizeof(httpAddress) * sizeof(char), "http://%d.%d.%d.%d/", a, b, c, d);
-		printf("%s\n", ip);
+		//printf("%s\n", ip);
 
 		//CURL STUFF
 		struct MemoryStruct chunk;
@@ -92,7 +92,7 @@ int main() {
 		curl_global_init(CURL_GLOBAL_ALL);
 		curl = curl_easy_init();
 		curl_easy_setopt(curl, CURLOPT_URL, ip);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
