@@ -58,6 +58,7 @@ int main() {
 	char ip[16];
 	char httpAddress[24];
 	int a,b,c,d = 0;
+	time_t timestamp;
 	
 	//Initialize random seed with current time.
 	srand ( (unsigned)time ( NULL ) );
@@ -70,6 +71,7 @@ int main() {
 		b = rand() % 255;
 		c = rand() % 255;
 		d = rand() % 255;
+		timestamp = time(NULL);
 
 		//Skip some private address
 		//Class A
@@ -98,7 +100,7 @@ int main() {
 		curl_global_init(CURL_GLOBAL_ALL);
 		curl = curl_easy_init();
 		curl_easy_setopt(curl, CURLOPT_URL, ip);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -111,6 +113,7 @@ int main() {
 		bson_append_new_oid( &buf, "_id" );
 		bson_append_string( &buf, "ip", ip );
 		bson_append_int(&buf, "curlCode", res);
+		bson_append_int(&buf, "time", timestamp);
 
 		if(res == CURLE_OK)
 		{
