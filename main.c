@@ -97,7 +97,7 @@ int main() {
 		chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */ 
 		chunk.size = 0;    /* no data at this point */ 
 
-		curl_global_init(CURL_GLOBAL_ALL);
+		//curl_global_init(CURL_GLOBAL_ALL);
 		curl = curl_easy_init();
 		curl_easy_setopt(curl, CURLOPT_URL, ip);
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
@@ -136,7 +136,8 @@ int main() {
 			chunk.size = 0;
 		}
 
-		curl_global_cleanup();
+		//curl_global_cleanup();
+		curl_easy_cleanup(curl);
 		mongo_destroy( conn );
 
 	}
